@@ -1,0 +1,423 @@
+Nataliya Feb 25th at 3:37 PM
+Здравствуйте @Мария Жарова @Марина Архипцева (эксперт)
+Задание 13.5.1.
+Код не принимает, пишет "ошибка". Не могу понять в чем проблема.
+df = pd.read_csv('recipes.csv')
+ids = []
+ids.append(df['id'])
+И то же самое в следующем задании, хотя у меня вывод соотвествует заданию
+df = pd.read_csv('recipes.csv')
+ingredients = []
+ingredients.append(df.columns[3:]) (edited) 
+:white_check_mark:
+1
+
+3 replies
+
+Sergey Meshcheryakov  1 month ago
+Добрый день.
+df['id'] возвращает Series (или, можно сказать, множество пар: индекс строки, значение id)
+df.columns[3:] - возвращает значение типа pandas.core.indexes.base.Index
+По условиям обеих задач итоговые переменные должны быть списками и содержать конкретные значения. Т.е. для первой задачи:
+df = pd.read_csv('recipes.csv')
+ids = df['id'].tolist()
+и для второй
+df = pd.read_csv('recipes.csv')
+ingredients = df.columns[3:].tolist()
+(edited)
+
+Марина Архипцева (эксперт)  1 month ago
+Добрый день!
+@Sergey Meshcheryakov большое спасибо за исчерпывающий ответ. В Jupyter хорошо видна разница при выводе df['id'] как Series и списка.  Series выводится вертикально и в строке есть значение и индекс. List выводится горизонтально.
+
+Nataliya  1 month ago
+@Sergey Meshcheryakov спасибо. При выводе это было не заметно.
+
+Inna Berezhnaia Mar 1st at 9:58 PM
+Добрый день! Задание 13.3.3 Какие ингредиенты не встречаются в рецептах блюд русской кухни ('cuisine' = 'russian')? Вот мой код:                          lst=['bacon', 'bread slices', 'buttermilk', 'red beets', 'mozzarella cheese', 'carrots']
+ingr_amount=set()
+for recipe in recipes:
+    if recipe['cuisine']=='russian':
+        for ingr in recipe['ingredients']:
+            ingr_amount.add(ingr)
+print (ingr_amount)
+for i in lst:
+    if i in ingr_amount:
+        lst.remove(i)
+print(lst)         Не могу понять, почему не удаляет 'red beets'?
+3 replies
+
+Владимир Горюнов  1 month ago
+Добрый вечер!
+А что если таким образом попробовать?
+lst=['bacon', 'bread slices', 'buttermilk', 'red beets', 'mozzarella cheese', 'carrots']
+ingr_amount=set()
+for recipe in recipes:
+    if recipe['cuisine']=='russian':
+        for ingr in recipe['ingredients']:
+            ingr_amount.add(ingr)
+print (ingr_amount)
+for i in lst:
+    if i not in ingr_amount:
+        print(i)
+2021-03-01_22-15-54.png 
+2021-03-01_22-15-54.png
+
+
+
+Владимир Горюнов  1 month ago
+Или с использованием разности множеств
+variants_set = {'bacon', 'bread slices', 'buttermilk', 'red beets', 'mozzarella cheese', 'carrots'}
+ingr_amount=set()
+for recipe in recipes:
+    if recipe['cuisine']=='russian':
+        for ingr in recipe['ingredients']:
+            ingr_amount.add(ingr)
+print(ingr_amount)
+variants_set.difference(ingr_amount)
+
+Inna Berezhnaia  1 month ago
+Класс! Спасибо за разнообразие!
+
+
+Загидуллин Артур Mar 2nd at 2:51 PM
+Добрый день
+Подскажите пожалуйста что не так в коде для задания 13.5, задание 3
+в notebook все работает
+df = pd.read_csv('recipes.csv')
+ids = df['id'].to_list()
+ingredients = df.columns[3:]
+new_recipes = []
+def make_list(stroka):
+    ing = []
+    for i in ingredients:
+        if int(stroka[i]) !=0:
+            ing.append(i)
+    return ing
+for current_id in ids:
+    cuisine = df[df['id'] == current_id]['cuisine'].iloc[0]
+    current_ingredients = make_list(df[df['id'] == current_id])
+    current_recipe = {'cuisine': cuisine, 'id': int(current_id), 'ingredients': current_ingredients}
+    new_recipes.append(current_recipe)
+:white_check_mark:
+1
+
+2 replies
+
+Sergey Meshcheryakov  1 month ago
+Добрый день. Вам нужно написать только функцию с соблюдением 4 условий, указанных в задании
+:handshake:
+1
+
+
+Загидуллин Артур  1 month ago
+понятно, спасибо
+:+1:
+1
+Inna Berezhnaia Mar 2nd at 7:49 PM
+@Владимир Горюнов Добрый вечер! Здадание 13.5.3 написание функции. Мой код:      def make_list(current_id):
+    lst = []
+    for ingr in ingredients:
+        if int(df[df['id'] == current_id][ingr])==1:
+            lst.append(ingr)
+    return lst      система не принимает.   Эти сторки тоже прописаны df = pd.read_csv('recipes.csv')
+ingredients=list(df.columns[3::]) (edited) 
+:heavy_check_mark:
+1
+
+4 replies
+
+Sergey Meshcheryakov  1 month ago
+Добрый вечер.
+Напишите код функции make_list, которая принимает строку датафрейма df, содержащую данные об одном рецепте, и возвращает перечень ингредиентов этого блюда в виде списка.
+У Вас же, если не ошибаюсь, функция получает id блюда
+:+1:
+1
+
+
+Inna Berezhnaia  1 month ago
+спасибо! все получилось!
+:+1:
+1
+
+
+Inna Berezhnaia  1 month ago
+А вот с этим "правильным кодом" def make_list(row):
+    lst = []
+    for ingr in ingredients:
+        if int(row[ingr].iloc[0])==1:
+            lst.append(ingr)
+    return lst  не работает цикл по заполнение списка словарями! Подскажите, пожалуйста, почему? (edited) 
+
+Inna Berezhnaia  1 month ago
+Все работает, сорри.
+
+Мария  6:30 PM
+Добрый день. Пытаюсь выполнить код из текста темы 13.4. Но не появляются новые столбцы... Что я делаю не так?
+def find_item(cell):
+    if item in cell:
+        return 1
+    return 0
+for item in ingredients:
+    df[item] = df['ingredients'].apply(find_item)
+df['ingredients'] = df['ingredients'].apply(lambda x: len(x))
+display(df) (edited) 
+
+
+
+Marija Kudinova Mar 26th at 12:36 AM
+13.3.1 почему не выходит?
+ingredients_all = set()
+for recipe in recipes:
+    for ingredient in ingredients:
+        ingredients_all.add(recipe['ingredients'])
+len(ingredients_all)
+ ответ NameError: name 'ingredients' is not defined
+:white_check_mark:
+1
+
+4 replies
+
+Марина Архипцева (эксперт)  17 days ago
+Добрый день!
+У вас не описана переменная ingredients
+Второй цикл лишний, можно добавлять сразу весь набор set(recipe['ingredients'])
+:+1:
+1
+
+
+Sergey Meshcheryakov  17 days ago
+@Марина Архипцева (эксперт) добрый день. Спасибо за подсказку, теперь буду иметь ввиду, что для множества есть аналог списочного extend - union
+ingredients_list = set()
+for recipe in recipes:
+    ingredients_list = ingredients_list.union(set(recipe['ingredients']))
+len(ingredients_list)
+если Вы это подразумевали :slightly_smiling_face: (edited) 
+
+Марина Архипцева (эксперт)  16 days ago
+Есть несколько способов добавить значение в set:
+Оператор | -- A | B , значение надо присвоить новой переменной, оба операнда должны быть множествами.
+Метод union -- A.union(B), значение надо присвоить переменной, A - должен быть типа set,   B должен быть итерируемым list, set, dictionary, string и т.д
+Метод update, аналогичен union, но update объединяет на месте.
+Оператор |= -- A |= B, аналогичен первому из этого списка, но результат сразу присваивается в A
+
+Sergey Meshcheryakov  16 days ago
+@Марина Архипцева (эксперт) спасибо!
+
+
+Marija Kudinova Mar 26th at 1:25 AM
+food = {}  # создаём пустой словарь для хранения информации об ингредиентах
+for item in ingredients:  # перебираем список ингредиентов
+    food[item] = 0 # добавляем в словарь ключ, соответствующий очередному ингредиенту
+for recipe in recipes:   # перебираем список рецептов
+    for item in recipe['ingredients']:   # и список ингредиентов в каждом рецепте
+        food[item] += 1   # увеличиваем значение нужного ключа в словаре на 1
+ тоже самое name 'ingredients' is not defined
+:white_check_mark:
+1
+
+8 replies
+
+Sergey Meshcheryakov  17 days ago
+Добрый вечер. В обоих случаях у Вас не определена переменная ingredients
+:+1:
+1
+
+
+Sergey Meshcheryakov  17 days ago
+Для первого варианта Вам нужно подправить вложенный цикл
+ingredients_all = set()
+for recipe in recipes:
+    for ingredient in recipe['ingredients']:
+        ingredients_all.add(ingredient)
+len(ingredients_all)
+recipes - список словарей
+recipe - один из таких словарей
+'ingredients' - ключ словаря recipe
+recipe['ingredients'] - доступ к значениям словаря по ключу, а именно к списку ингредиентов (edited) 
+
+Marija Kudinova  17 days ago
+этот исправила
+
+Marija Kudinova  17 days ago
+но food  это прмер из модуля
+
+Marija Kudinova  17 days ago
+food = {}  # создаём пустой словарь для хранения информации об ингредиентах
+for item in recipe['ingredients']:  # перебираем список ингредиентов
+    food[item] = 0 # добавляем в словарь ключ, соответствующий очередному ингредиенту
+for recipe in recipes:   # перебираем список рецептов
+    for item in recipe['ingredients']:   # и список ингредиентов в каждом рецепте
+        food[item] += 1   # увеличиваем значение нужного ключа в словаре на 1
+food
+
+Marija Kudinova  17 days ago
+тоже ошибки
+
+Sergey Meshcheryakov  17 days ago
+Вы,наверно, пропустили эту информацию
+Для создания словаря нам понадобится список или множество, содержащие перечень всех ингредиентов из описанных в наборе данных рецептов. Такой список вы составили при решении задачи в предыдущем уроке. Воспользуйтесь вашим кодом для решения этой задачи ещё раз, но при этом назовите список (или множество, это не будет иметь значения в коде, который мы собираемся создавать) именем ingredients.
+:+1:
+1
+
+
+Marija Kudinova  17 days ago
+точно
+
+
+Stepan Apr 5th at 2:18 PM
+@Владимир Горюнов @Мария Жарова @Марина Архипцева (эксперт)
+Задание 13.3.5 Не понимаю задания...
+Какой ингредиент входит в состав самого большого количества блюд?
+что значит самое большое количества блюд?
+Код не нужен, нужно только пояснение...
+:white_check_mark:
+1
+
+8 replies
+
+Sergey Meshcheryakov  6 days ago
+Добрый день. Нужно определить, какой ингредиент, из всех имеющихся, чаще всего встречается в составе блюд
+:+1:
+1
+
+
+Stepan  6 days ago
+ок, спасибо
+:handshake:
+1
+
+
+Марина Архипцева (эксперт)  6 days ago
+Добрый день! Спасибо за вопрос, наверное стоит поправить формулировку. @Support давайте рассмотрим такой вариант формулировки в этом вопросе "Какой ингредиент чаще всего встречается в составе блюд?"
+
+Support  6 days ago
+Здравствуйте!
+Благодарим за фидбэк!
+Отправили редактору на поправку. После исправления отпишемся в треде.
+:handshake:
+1
+
+
+Stepan  6 days ago
+да, так будет понятнее и вопросом меньше. Спасибо
+:+1:
+1
+:wink:
+1
+
+
+Dmitriy  1 day ago
+Сколько ингредиентов входит в состав только одного блюда?
+Опросил пятерых. Никто не может понять вопрос.
+
+Sergey Meshcheryakov  1 day ago
+Есть ингредиент, который используется только в каком-нибудь одном блюде. Нужно посчитать, сколько имеется подобных ингредиентов. Например, фиолетовый рис используют для приготовления только фиолетовой рисовой каши, красный горох используют только для приготовления красного горохового супа  и т.п. ))
+
+Dmitriy  1 day ago
+Сколько ингредиентов входит в состав только один раз среди всех блюд? Вот так по-русски будет.:thumbsup:
+
+Dmitriy Apr 10th at 12:59 PM
+Задание 13.3.4 :
+Начал
+for recipe in recipes:
+    for ingredient in recipe['ingredients']:
+        if 'salt' in ingredient:
+Дальше не могу понять как вычислить эти 20% блюд.
+:white_check_mark:
+1
+
+4 replies
+
+Sergey Meshcheryakov  1 day ago
+Добрый день. Всего блюд 500. Если ингредиент встречается в более чем 100 блюдах, то он является искомым (edited) 
+:+1:
+1
+:raised_hands:
+1
+
+
+Dmitriy  1 day ago
+ing20 = 0
+for recipe in recipes:
+    for ingredient in recipe['ingredients']:
+        if 'water' in ingredient:
+            ing20 += 1
+if ing20 > 100: print("water +")
+Вода неправильный ответ, а у меня 129 раз встречается ((
+
+Sergey Meshcheryakov  1 day ago
+Вода встречается 97 раз
+Создаем множество уникальных ингредиентов
+ingredients_list = set()
+for recipe in recipes:
+    ingredients_list = ingredients_list.union(set(recipe['ingredients']))
+Создаем словарь, в котором подсчитываем, сколько раз ингредиент встречается в рецептах
+food = {}  # создаём пустой словарь для хранения информации об ингредиентах
+for item in ingredients:  # перебираем список ингредиентов
+    food[item] = 0 # добавляем в словарь ключ, соответствующий очередному ингредиенту
+for recipe in recipes:   # перебираем список рецептов
+     for item in recipe['ingredients']:   # и список ингредиентов в каждом рецепте
+        food[item] += 1   # увеличиваем значение нужного ключа в словаре на 1
+display(food['water'])
+потом ищем ингредиенты, которые встречаются более 100 раз
+for index,value in food.items():
+    if value>100:
+        print(index)
+(edited)
+:+1:
+1
+
+
+Dmitriy  1 day ago
+Точно, они уже были посчитаны раннее
+
+
+Dmitriy Yesterday at 12:04 PM
+Задание 13.4.6
+import json
+from pprint import pprint
+with open('recipes.json') as f:
+    recipes = json.load(f)
+import pandas as pd
+df = pd.DataFrame(recipes)
+def find_item(cell):
+    if item in cell:
+        return 1
+    return 0
+for item in ingredients:
+    df['item'] = df['ingredients'].apply(find_item)
+NameError: name 'ingredients' is not defined
+Переменная должна быть определена? Думал что for сам это делает.
+:white_check_mark:
+1
+
+3 replies
+
+Sergey Meshcheryakov  14 hours ago
+Добрый день. Вы пропустили часть кода, в которой составляете множество (set) ингредиентов (ingredients)
++
+В завершение изменим значение столбца ingredients, заполнив его данными о количестве ингредиентов в каждом рецепте:
+df['ingredients'] = df['ingredients'].apply(len)
+:+1:
+1
+
+
+Dmitriy  14 hours ago
+Добавил но не понимаю почему новые колонки не добавляются.
+ingredients = set()
+def find_item(cell):
+    if item in cell:
+        return 1
+    return 0
+for item in ingredients:
+    df[item] = df['ingredients'].apply(find_item)
+df['ingredients'] = df['ingredients'].apply(len)
+df.head()
+
+Dmitriy  14 hours ago
+Понял, надо заполнить ingredients. Просто выполнить код из 13.3. А я прочитал что надо лишь объединить в единый код всё со страницы 13.4
+:+1:
+3
+
+
